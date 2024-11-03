@@ -1,0 +1,105 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id               Int       @id @default(autoincrement())
+  fullname         String?   // Optional, only for candidates
+  birthOfDate      DateTime? // Optional, only for candidates
+  address          String?   // Optional, only for candidates
+  job              String?   // Optional, only for candidates
+  jobExperiences    Json?     // Optional, only for candidates
+  cv               String?   // Optional, only for candidates
+  instagram        String?   // Optional, only for candidates
+  twitter          String?   // Optional, only for candidates
+  linkedin         String?   // Optional, only for candidates
+  portfolio        String?   // Optional, only for candidates
+  photoProfile     String?   // Optional, only for candidates
+  phoneNumber      String?   // Optional, only for candidates
+  email            String     @unique // Unique email for all users
+  password         String
+  role             Role       // e.g., "CANDIDATE" or "EMPLOYER"
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+
+  // New Fields
+  yearOfExperience Int?      // Optional, for both candidates and employers
+  gender           String?    // Optional, for candidates
+  companyName      String?    // Optional, only for employers
+  summary          String?    // Optional, for both candidates and employers
+
+  // Relasi baru
+  vacancies        Vacancy[]  @relation("EmployerVacancies") // Relasi ke Vacancy
+
+}
+
+
+enum Role {
+  EMPLOYER
+  CANDIDATE
+}
+
+model Vacancy {
+    id                  Int              @id @default(autoincrement())
+  vacancyName         String
+  jobPosition         String
+  jobLevel            JobLevel         @relation(fields: [jobLevelId], references: [id])
+  jobLevelId          Int
+  employmentStatus    EmploymentStatus  @relation(fields: [employmentStatusId], references: [id])
+  employmentStatusId  Int
+  vacancyStatus       String            // Status lowongan disimpan sebagai string
+  responsibilities    String
+  gender              Gender
+  minAge             Int?
+  maxAge             Int?
+  minYearExperience   Int?
+  minEducationLevel   EducationLevel   @relation(fields: [minEducationLevelId], references: [id])
+  minEducationLevelId Int
+  employerId          Int              
+  employer            User              @relation(fields: [employerId], references: [id], name: "EmployerVacancies") // Relasi ke User
+  softSkills          SoftSkill[]      @relation("VacancySoftSkills")
+  hardSkills          HardSkill[]      @relation("VacancyHardSkills")
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+}
+
+model JobLevel {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  vacancies   Vacancy[]
+}
+
+model EmploymentStatus {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  vacancies   Vacancy[]
+}
+
+model EducationLevel {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  vacancies   Vacancy[]
+}
+
+model SoftSkill {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  vacancies   Vacancy[] @relation("VacancySoftSkills")
+}
+
+model HardSkill {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  vacancies   Vacancy[] @relation("VacancyHardSkills")
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
