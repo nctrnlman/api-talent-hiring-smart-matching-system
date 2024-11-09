@@ -55,6 +55,6 @@ const router = express.Router();
  *         description: Unauthorized
  */
 
-router.get("/", authenticateToken, masterDataController.getMasterData);
+router.get("/", masterDataController.getMasterData);
 
 module.exports = router;

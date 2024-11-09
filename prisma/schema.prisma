@@ -54,16 +54,16 @@ model Vacancy {
   employmentStatusId  Int
   vacancyStatus       String            // Status lowongan disimpan sebagai string
   responsibilities    String
-  gender              Gender
+  gender              Gender?
   minAge             Int?
   maxAge             Int?
   minYearExperience   Int?
-  minEducationLevel   EducationLevel   @relation(fields: [minEducationLevelId], references: [id])
+  minEducationLevel   EducationLevel?   @relation(fields: [minEducationLevelId], references: [id])
   minEducationLevelId Int
   employerId          Int              
   employer            User              @relation(fields: [employerId], references: [id], name: "EmployerVacancies") // Relasi ke User
-  softSkills          SoftSkill[]      @relation("VacancySoftSkills")
-  hardSkills          HardSkill[]      @relation("VacancyHardSkills")
+ softSkills           Json?           // Menyimpan array ID SoftSkill dalam JSON
+  hardSkills           Json?           // Menyimpan array ID HardSkill dalam JSON
   createdAt          DateTime         @default(now())
   updatedAt          DateTime         @updatedAt
 }
@@ -87,19 +87,17 @@ model EducationLevel {
 }
 
 model SoftSkill {
-  id          Int       @id @default(autoincrement())
-  name        String    @unique
-  vacancies   Vacancy[] @relation("VacancySoftSkills")
+  id            Int        @id @default(autoincrement())
+  name          String
 }
 
 model HardSkill {
-  id          Int       @id @default(autoincrement())
-  name        String    @unique
-  vacancies   Vacancy[] @relation("VacancyHardSkills")
+  id            Int        @id @default(autoincrement())
+  name          String
 }
 
 enum Gender {
-  MALE
-  FEMALE
-  OTHER
+  male
+  female
+  other
 }
