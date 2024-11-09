@@ -132,24 +132,14 @@ const router = express.Router();
  *         description: Unauthorized
  */
 
-router.get(
-  "/",
-  authenticateToken,
-  authorizeRole("EMPLOYER"),
-  vacancyController.listVacancies
-);
+router.get("/", authenticateToken, vacancyController.listVacancies);
 router.post(
   "/",
   authenticateToken,
   authorizeRole("EMPLOYER"),
   vacancyController.createVacancy
 );
-router.get(
-  "/:id",
-  authenticateToken,
-  authorizeRole("EMPLOYER"),
-  vacancyController.getVacancyById
-);
+router.get("/:id", authenticateToken, vacancyController.getVacancyById);
 router.put(
   "/:id",
   authenticateToken,

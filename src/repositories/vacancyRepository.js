@@ -2,13 +2,25 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 class VacancyRepository {
-  async findVacancies() {
-    return await prisma.vacancy.findMany({
+  async findVacancies(employerId) {
+    const query = {
       include: {
         jobLevel: true, // Include JobLevel
         employmentStatus: true, // Include EmploymentStatus
       },
-    });
+      orderBy: {
+        createdAt: "desc", // Sort by createdAt in descending order (newest first)
+      },
+    };
+
+    // If employerId is provided, filter vacancies by employerId
+    if (employerId) {
+      query.where = {
+        employerId: Number(employerId), // Ensure employerId is filtered as a number
+      };
+    }
+
+    return await prisma.vacancy.findMany(query);
   }
 
   async findVacancyById(id) {

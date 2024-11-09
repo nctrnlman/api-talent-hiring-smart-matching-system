@@ -6,7 +6,9 @@ const responseFormatter = require("../utils/responseFormatter");
  */
 const listVacancies = async (req, res) => {
   try {
-    const vacancies = await vacancyService.getVacancies();
+    const { employerId } = req.query; // Get employerId from the request query
+    const vacancies = await vacancyService.getVacancies(employerId); // Pass employerId to the service
+
     res
       .status(200)
       .json(responseFormatter(vacancies, "Vacancies fetched successfully"));

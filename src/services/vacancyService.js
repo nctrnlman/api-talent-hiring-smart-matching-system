@@ -1,8 +1,8 @@
 const vacancyRepository = require("../repositories/vacancyRepository");
 
 class VacancyService {
-  async getVacancies() {
-    return await vacancyRepository.findVacancies();
+  async getVacancies(employerId) {
+    return await vacancyRepository.findVacancies(employerId);
   }
 
   async getVacancyById(id) {
