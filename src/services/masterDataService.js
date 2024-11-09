@@ -16,6 +16,10 @@ class MasterDataService {
   async getHardSkills() {
     return await masterDataRepository.findHardSkills();
   }
+
+  async getEducLevels() {
+    return await masterDataRepository.findEducLevels();
+  }
 }
 
 module.exports = new MasterDataService();

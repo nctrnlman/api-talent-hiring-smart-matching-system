@@ -30,6 +30,9 @@ const getMasterData = async (req, res) => {
     if (types.includes("hardSkills")) {
       responseData.hardSkills = await masterDataService.getHardSkills();
     }
+    if (types.includes("educLevels")) {
+      responseData.eduLevels = await masterDataService.getEducLevels();
+    }
 
     res
       .status(200)

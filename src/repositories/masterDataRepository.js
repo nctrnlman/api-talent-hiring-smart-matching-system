@@ -17,6 +17,10 @@ class MasterDataRepository {
   async findHardSkills() {
     return await prisma.hardSkill.findMany();
   }
+
+  async findEducLevels() {
+    return await prisma.educationLevel.findMany();
+  }
 }
 
 module.exports = new MasterDataRepository();
