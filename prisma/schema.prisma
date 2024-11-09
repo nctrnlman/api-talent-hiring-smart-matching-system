@@ -35,7 +35,16 @@ model User {
 
   // Relasi baru
   vacancies        Vacancy[]  @relation("EmployerVacancies") // Relasi ke Vacancy
+ applicants       Applicant[] // New relation field to Applicant
 
+
+   // SoftSkills and HardSkills stored as JSON arrays of IDs
+  softSkills       Json?      // Array of SoftSkill IDs stored in JSON format
+  hardSkills       Json?      // Array of HardSkill IDs stored in JSON format
+
+  // Relasi dengan EducationLevel
+  educationLevel   EducationLevel? @relation(fields: [educationLevelId], references: [id])
+  educationLevelId Int?
 }
 
 
@@ -66,6 +75,8 @@ model Vacancy {
   hardSkills           Json?           // Menyimpan array ID HardSkill dalam JSON
   createdAt          DateTime         @default(now())
   updatedAt          DateTime         @updatedAt
+  applicants          Applicant[] // New relation field to Applicant
+
 }
 
 model JobLevel {
@@ -84,16 +95,20 @@ model EducationLevel {
   id          Int       @id @default(autoincrement())
   name        String    @unique
   vacancies   Vacancy[]
+   // Relasi one-to-many ke User
+  users     User[]
 }
 
 model SoftSkill {
   id            Int        @id @default(autoincrement())
   name          String
+ 
 }
 
 model HardSkill {
   id            Int        @id @default(autoincrement())
   name          String
+
 }
 
 enum Gender {
@@ -101,3 +116,35 @@ enum Gender {
   female
   other
 }
+
+model Applicant {
+  id         Int      @id @default(autoincrement())
+  userId     Int      // Foreign key for the candidate applying
+  vacancyId  Int      // Foreign key for the applied vacancy
+  status     Status   // Enum to show the current status of the applicant
+  flow       Flow     // Enum to track the application stage (screening, interview, etc.)
+  note       String?  // Optional notes for additional information
+  createdAt  DateTime @default(now())
+  updatedAt          DateTime         @updatedAt
+// Relations
+  user               User      @relation(fields: [userId], references: [id])
+  vacancy            Vacancy   @relation(fields: [vacancyId], references: [id])
+
+  @@unique([userId, vacancyId]) // Ensures a user can only apply once per vacancy
+}
+
+enum Status {
+  APPLIED        // Initial application status
+  IN_PROGRESS    // Application is actively being processed
+  ACCEPTED       // Applicant accepted for the role
+  REJECTED       // Applicant rejected
+  WITHDRAWN      // Applicant withdrew their application
+}
+
+enum Flow {
+  SCREENING      // Initial screening stage
+  INTERVIEW      // Interview stage
+  OFFER          // Offer stage
+  ONBOARDING     // Final onboarding stage
+}
+

@@ -38,7 +38,36 @@ const getCandidateById = async (req, res) => {
   }
 };
 
+/**
+ * Function to update candidate information by ID
+ */
+const updateCandidate = async (req, res) => {
+  const { id } = req.params;
+  const candidateData = req.body;
+
+  try {
+    const updatedCandidate = await candidateService.updateCandidate(
+      id,
+      candidateData
+    );
+    if (!updatedCandidate) {
+      return res
+        .status(404)
+        .json(responseFormatter(null, "Candidate not found", 404));
+    }
+
+    res
+      .status(200)
+      .json(
+        responseFormatter(updatedCandidate, "Candidate updated successfully")
+      );
+  } catch (error) {
+    res.status(500).json(responseFormatter(null, error.message, 500));
+  }
+};
+
 module.exports = {
   listCandidates,
   getCandidateById,
+  updateCandidate, // Export the new function
 };

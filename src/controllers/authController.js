@@ -26,6 +26,9 @@ const register = async (req, res) => {
       gender, // New field
       companyName, // New field
       summary, // New field
+      softSkills, // New field
+      hardSkills, // New field
+      educationLevelId, // New field
     } = req.body;
 
     const newUser = await AuthService.register(
@@ -47,7 +50,10 @@ const register = async (req, res) => {
       yearOfExperience, // Pass new field
       gender, // Pass new field
       companyName, // Pass new field
-      summary // Pass new field
+      summary, // Pass new field
+      softSkills, // New field
+      hardSkills, // New field
+      educationLevelId // New field
     );
 
     res
