@@ -9,6 +9,10 @@ class CandidateService {
   async getCandidateById(id) {
     return await userRepository.findCandidateById(id);
   }
+
+  async updateCandidate(id, candidateData) {
+    return await userRepository.updateCandidateById(id, candidateData);
+  }
 }
 
 module.exports = new CandidateService();

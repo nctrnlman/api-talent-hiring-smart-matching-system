@@ -4,6 +4,7 @@ const authRoutes = require("./routes/authRoutes");
 const candidateRoutes = require("./routes/candidateRoutes");
 const vacancyRoutes = require("./routes/vacancyRoutes");
 const masterDataRoutes = require("./routes/masterDataRoutes");
+const applicantRoutes = require("./routes/applicantRoutes");
 const setupSwagger = require("./config/swagger");
 const cors = require("cors");
 dotenv.config();
@@ -20,6 +21,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/candidates", candidateRoutes);
 app.use("/api/vacancies", vacancyRoutes);
 app.use("/api/master", masterDataRoutes);
+app.use("/api/applicants", applicantRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

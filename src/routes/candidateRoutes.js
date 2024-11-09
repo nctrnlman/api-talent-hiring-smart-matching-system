@@ -64,17 +64,13 @@ const router = express.Router();
  *       401:
  *         description: Unauthorized
  */
+
 router.get(
   "/",
   authenticateToken,
   authorizeRole("EMPLOYER"),
   candidateController.listCandidates
 );
-router.get(
-  "/:id",
-  authenticateToken,
-  authorizeRole("EMPLOYER"),
-  candidateController.getCandidateById
-);
-
+router.get("/:id", authenticateToken, candidateController.getCandidateById);
+router.put("/:id", authenticateToken, candidateController.updateCandidate);
 module.exports = router;

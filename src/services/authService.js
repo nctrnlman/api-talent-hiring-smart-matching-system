@@ -22,7 +22,10 @@ class AuthService {
     yearOfExperience, // New field
     gender, // New field
     companyName, // New field
-    summary // New field
+    summary, // New field,
+    softSkills, // New field
+    hardSkills, // New field
+    educationLevelId // New field
   ) {
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -46,6 +49,9 @@ class AuthService {
       gender, // Include new field
       companyName, // Include new field
       summary, // Include new field
+      softSkills: softSkills ? JSON.stringify(softSkills) : null, // Store as JSON array of IDs
+      hardSkills: hardSkills ? JSON.stringify(hardSkills) : null, // Store as JSON array of IDs
+      educationLevelId: educationLevelId || null,
     });
   }
 

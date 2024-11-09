@@ -27,6 +27,13 @@ class UserRepository {
           gender: userData.gender,
           companyName: userData.companyName,
           summary: userData.summary,
+          softSkills: userData.softSkills
+            ? JSON.parse(userData.softSkills)
+            : null, // Parsing JSON if available
+          hardSkills: userData.hardSkills
+            ? JSON.parse(userData.hardSkills)
+            : null, // Parsing JSON if available
+          educationLevelId: parseInt(userData.educationLevelId) || null,
         },
       });
       return user;
@@ -93,6 +100,41 @@ class UserRepository {
     return await prisma.user.findUnique({
       where: { id: Number(id), role: "CANDIDATE" },
     });
+  }
+
+  async updateCandidateById(id, candidateData) {
+    try {
+      const updatedCandidate = await prisma.user.update({
+        where: { id: Number(id), role: "CANDIDATE" },
+        data: {
+          fullname: candidateData.fullname,
+          birthOfDate: candidateData.birthOfDate
+            ? new Date(candidateData.birthOfDate)
+            : null,
+          address: candidateData.address,
+          job: candidateData.job,
+          jobExperiences: candidateData.jobExperiences,
+          cv: candidateData.cv,
+          instagram: candidateData.instagram,
+          twitter: candidateData.twitter,
+          linkedin: candidateData.linkedin,
+          portfolio: candidateData.portfolio,
+          phoneNumber: candidateData.phoneNumber,
+          email: candidateData.email,
+          yearOfExperience: candidateData.yearOfExperience,
+          gender: candidateData.gender,
+          companyName: candidateData.companyName,
+          summary: candidateData.summary,
+          softSkills: candidateData.softSkills || null,
+          hardSkills: candidateData.hardSkills || null,
+          educationLevelId: parseInt(candidateData.educationLevelId) || null,
+        },
+      });
+      return updatedCandidate;
+    } catch (error) {
+      console.error("Error updating candidate:", error);
+      throw new Error("An error occurred while updating the candidate.");
+    }
   }
 }
 
