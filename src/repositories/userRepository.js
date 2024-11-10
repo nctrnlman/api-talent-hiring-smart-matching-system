@@ -97,9 +97,69 @@ class UserRepository {
   }
 
   async findCandidateById(id) {
-    return await prisma.user.findUnique({
-      where: { id: Number(id), role: "CANDIDATE" },
+    // Step 1: Find user with IDs for softSkills, hardSkills, and educationLevel
+    const user = await prisma.user.findUnique({
+      where: {
+        id: parseInt(id),
+        role: "CANDIDATE",
+      },
     });
+
+    if (!user) {
+      return null;
+    }
+
+    // Initialize variables for softSkills, hardSkills, and educationLevel
+    let softSkills = [];
+    let hardSkills = [];
+    let educationLevel = null;
+
+    // Step 2: Fetch the related softSkills if available
+    if (user.softSkills && user.softSkills.length > 0) {
+      softSkills = await prisma.softSkill.findMany({
+        where: {
+          id: { in: user.softSkills }, // Fetch softSkills using the IDs stored in the user record
+        },
+        select: {
+          id: true,
+          name: true,
+        },
+      });
+    }
+
+    // Step 3: Fetch the related hardSkills if available
+    if (user.hardSkills && user.hardSkills.length > 0) {
+      hardSkills = await prisma.hardSkill.findMany({
+        where: {
+          id: { in: user.hardSkills }, // Fetch hardSkills using the IDs stored in the user record
+        },
+        select: {
+          id: true,
+          name: true,
+        },
+      });
+    }
+
+    // Step 4: Fetch the educationLevel if available
+    if (user.educationLevelId) {
+      educationLevel = await prisma.educationLevel.findUnique({
+        where: {
+          id: user.educationLevelId, // Fetch the education level by the ID
+        },
+        select: {
+          id: true,
+          name: true,
+        },
+      });
+    }
+
+    // Step 5: Return the merged data
+    return {
+      ...user,
+      softSkills,
+      hardSkills,
+      educationLevel,
+    };
   }
 
   async updateCandidateById(id, candidateData) {

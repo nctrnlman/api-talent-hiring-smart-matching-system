@@ -129,6 +129,7 @@ model Applicant {
 // Relations
   user               User      @relation(fields: [userId], references: [id])
   vacancy            Vacancy   @relation(fields: [vacancyId], references: [id])
+ recruitmentProcesses RecruitmentProcess[]  // Relasi ke tabel RecruitmentProcess
 
   @@unique([userId, vacancyId]) // Ensures a user can only apply once per vacancy
 }
@@ -148,3 +149,17 @@ enum Flow {
   ONBOARDING     // Final onboarding stage
 }
 
+
+model RecruitmentProcess {
+  id          Int       @id @default(autoincrement())  // ID unik untuk setiap entry
+  applicantId Int       // Foreign key ke tabel Applicant
+  applicant   Applicant @relation(fields: [applicantId], references: [id])  // Relasi ke Applicant
+
+  result      String    // Hasil dari tahap perekrutan (misalnya "Accepted", "Rejected", "In Progress", etc.)
+  summary     String?   // Rangkuman atau catatan terkait tahap tersebut
+  flow        Flow      // Status tahap perekrutan (SCREENING, INTERVIEW, OFFER, etc.)
+  createdAt   DateTime  @default(now())  // Waktu pencatatan
+  updatedAt   DateTime  @updatedAt        // Waktu pembaruan terakhir
+
+  @@index([applicantId])  // Membuat index berdasarkan applicantId untuk query yang lebih cepat
+}
