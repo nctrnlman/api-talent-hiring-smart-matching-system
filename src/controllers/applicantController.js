@@ -6,9 +6,13 @@ const responseFormatter = require("../utils/responseFormatter");
  * List applicants with optional vacancy filter
  */
 const listApplicants = async (req, res) => {
-  const { vacancyId } = req.query;
+  const { employerId, userId, status } = req.query;
   try {
-    const applicants = await applicantService.getApplicants(vacancyId);
+    const applicants = await applicantService.getApplicants(
+      employerId,
+      userId,
+      status
+    );
     res
       .status(200)
       .json(responseFormatter(applicants, "Applicants fetched successfully"));
@@ -32,7 +36,42 @@ const applyToVacancy = async (req, res) => {
   }
 };
 
+/**
+ * Move applicant to the next step in the recruitment process
+ */
+const moveToNextStep = async (req, res) => {
+  const applicantId = parseInt(req.params.id);
+  const { result, summary, flow } = req.body;
+
+  if (isNaN(applicantId)) {
+    return res
+      .status(400)
+      .json(responseFormatter(null, "Invalid applicant ID", 400));
+  }
+
+  try {
+    // Memindahkan applicant ke tahap berikutnya dan mengupdate status ke IN_PROGRESS
+    const recruitmentProcess = await applicantService.moveToNextStep(
+      applicantId,
+      result,
+      summary,
+      flow
+    );
+    return res
+      .status(200)
+      .json(
+        responseFormatter(
+          recruitmentProcess,
+          "Applicant moved to the next step successfully and status updated"
+        )
+      );
+  } catch (error) {
+    return res.status(500).json(responseFormatter(null, error.message, 500));
+  }
+};
+
 module.exports = {
   listApplicants,
   applyToVacancy,
+  moveToNextStep,
 };

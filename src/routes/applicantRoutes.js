@@ -66,4 +66,48 @@ router.get("/", authenticateToken, applicantController.listApplicants);
  */
 router.post("/", authenticateToken, applicantController.applyToVacancy);
 
+/**
+ * @swagger
+ * /api/applicants/{id}/move-to-next-step:
+ *   patch:
+ *     tags: [Applicants]
+ *     summary: Move applicant to the next step in the recruitment process and update status to IN_PROGRESS
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Applicant ID
+ *       - in: body
+ *         name: nextStepData
+ *         required: true
+ *         schema:
+ *           type: object
+ *           properties:
+ *             result:
+ *               type: string
+ *               description: The result of the recruitment step
+ *             summary:
+ *               type: string
+ *               description: A summary of the recruitment process step
+ *             flow:
+ *               type: string
+ *               description: The flow stage of the recruitment process
+ *     responses:
+ *       200:
+ *         description: Applicant moved to the next step successfully and status updated
+ *       400:
+ *         description: Bad request
+ *       404:
+ *         description: Applicant not found
+ */
+router.patch(
+  "/:id/move-to-next-step",
+  authenticateToken,
+  applicantController.moveToNextStep
+);
+
 module.exports = router;
